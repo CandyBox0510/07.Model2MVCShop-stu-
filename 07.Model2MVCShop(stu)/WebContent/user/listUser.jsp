@@ -1,27 +1,6 @@
 <%@ page contentType="text/html; charset=euc-kr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%-- 
-<%@page import="com.model2.mvc.common.util.CommonUtil"%>
-<%@page import="com.model2.mvc.common.Page"%>
-<%@page import="com.model2.mvc.service.domain.User"%>
-<%@page import="com.model2.mvc.common.Search"%>
-
-
-<%@ page import="java.util.*"  %>
-
-
-<%
-	Search search=(Search)request.getAttribute("search");
-	Page resultPage=(Page)request.getAttribute("resultPage");
-	List<User> list = (List)request.getAttribute("list");
-	
-	int currentPage=search.getCurrentPage();
-	
-	String searchCondition = CommonUtil.null2str(search.getSearchCondition());
-	String searchKeyword = CommonUtil.null2str(search.getSearchKeyword());
-	
-%> --%>
 
 <html>
 <head>
@@ -40,7 +19,7 @@ function fncGetList(currentPage){
 
 <div style="width:98%; margin-left:10px;">
 
-<form name="detailForm" action="/listUser" method="post">
+<form name="detailForm" action="/user/listUser" method="post">
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -91,7 +70,6 @@ function fncGetList(currentPage){
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>
-		<%-- <td colspan="11" >전체  <%=resultPage.getTotalCount() %> 건수, 현재 <%=resultPage.getCurrentPage() %> 페이지</td> --%>
 		<td colspan="11" >전체  ${resultPage.totalCount } 건수, 현재 ${resultPage.currentPage } 페이지</td>
 	</tr>
 	<tr>
@@ -108,27 +86,6 @@ function fncGetList(currentPage){
 	</tr>
 	
 	
-<%-- 	<% 	
-		for(int i=0; i<list.size(); i++) {
-			User user = (User)list.get(i);
-	%>
-	<tr class="ct_list_pop">
-		<td align="center"><%=i+1%></td>
-		<td></td>
-		<td align="left">
-			<a href="/getUser.do?userId=<%=user.getUserId() %>"><%= user.getUserId() %></a>
-		</td>
-		<td></td>
-		<td align="left"><%= user.getUserName() %></td>
-		<td></td>
-		<td align="left"><%= user.getEmail() %>
-		</td>		
-	</tr>
-	<tr>
-		<td colspan="11" bgcolor="D6D7D6" height="1"></td>
-	</tr>
-	<% } %> --%>
-	
 	<c:set var="i" value="0"/> 
 	<c:forEach var="user" items="${list }">
 		<c:set var="i" value="${i+1 }"/>
@@ -136,7 +93,7 @@ function fncGetList(currentPage){
 			<td align="center">${i }</td>
 			<td></td>
 			<td align="left">
-				<a href="/getUser?userId=${user.userId }">${user.userId }</a>
+				<a href="/user/getUser?userId=${user.userId }">${user.userId }</a>
 			</td>
 			<td></td>
 			<td align="left">${user.userName }</td>

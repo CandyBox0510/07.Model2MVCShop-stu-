@@ -38,7 +38,7 @@ public class UserController {
 		System.out.println("UserController Default Constructor");
 	}
 	
-	@RequestMapping(value="/checkDuplication", method=RequestMethod.GET)
+	@RequestMapping(value="/checkDuplication", method=RequestMethod.POST)
 	public String checkDuplication(@RequestParam("userId") String userId, HttpServletRequest request,
 										HttpServletResponse response) throws Exception{
 		boolean result = userService.checkDuplication(userId);
@@ -49,7 +49,7 @@ public class UserController {
 		return "forward:/user/checkDuplication.jsp";
 	}
 	
-	@RequestMapping( value="addUser", method=RequestMethod.GET )
+	@RequestMapping( value="/addUser", method=RequestMethod.GET )
 	public String addUser() throws Exception{
 	
 		System.out.println("/user/addUser : GET");
@@ -58,7 +58,7 @@ public class UserController {
 	}
 	
 	//@RequestMapping("/addUser.do")
-	@RequestMapping( value="addUser", method=RequestMethod.POST )
+	@RequestMapping( value="/addUser", method=RequestMethod.POST )
 	public String addUser( @ModelAttribute("user") User user ) throws Exception {
 
 		System.out.println("/user/addUser : POST");
@@ -68,7 +68,7 @@ public class UserController {
 		return "redirect:/user/loginView.jsp";
 	}
 	
-	@RequestMapping( value="login", method=RequestMethod.GET )
+	@RequestMapping( value="/login", method=RequestMethod.GET )
 	public String login() throws Exception{
 		
 		System.out.println("/user/logon : GET");
@@ -76,7 +76,7 @@ public class UserController {
 		return "redirect:/user/loginView.jsp";
 	}
 	
-	@RequestMapping(value="/login.do", method=RequestMethod.POST)
+	@RequestMapping(value="/login", method=RequestMethod.POST)
 	public String login(@ModelAttribute("user") User user,
 							HttpServletRequest request,HttpSession session) throws Exception{
 		User dbVO = userService.loginUser(user);
@@ -89,13 +89,13 @@ public class UserController {
 		return "redirect:/index.jsp";
 	}
 	
-	@RequestMapping(value="/logout.do", method=RequestMethod.GET)
+	@RequestMapping(value="/logout", method=RequestMethod.GET)
 	public String logout(HttpSession session){
 		session.invalidate();
 		return "redirect:/index.jsp";
 	}
 	
-	@RequestMapping(value="/getUser.do", method=RequestMethod.POST)
+	@RequestMapping(value="/getUser", method=RequestMethod.GET)
 	public String getUser(@RequestParam("userId") String userId,
 							HttpServletRequest request) throws Exception{
 
@@ -117,7 +117,7 @@ public class UserController {
 		
 	}
 	
-	@RequestMapping(value="/updateUser.do", method=RequestMethod.POST)
+	@RequestMapping(value="/updateUser", method=RequestMethod.POST)
 	public String updateUser(@ModelAttribute("user") User user,
 								HttpSession session) throws Exception{
 		String userId=user.getUserId();
@@ -130,10 +130,10 @@ public class UserController {
 			session.setAttribute("user", user);
 		}
 		
-		return "redirect:/getUser.do?userId="+userId;	
+		return "redirect:/user/getUser.do?userId="+userId;	
 	}
-	
-	@RequestMapping(value="/listUser" , method=RequestMethod.GET)
+		
+	@RequestMapping(value="/listUser")
 	public String listUser(@ModelAttribute("search")Search search, HttpServletRequest request) throws Exception{
 
 		if(search.getCurrentPage() ==0 ){

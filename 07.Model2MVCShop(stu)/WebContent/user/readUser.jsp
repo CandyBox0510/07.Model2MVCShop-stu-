@@ -2,14 +2,6 @@
 <%@ page contentType="text/html; charset=EUC-KR" %>
 
 <% request.setCharacterEncoding("EUC-KR"); %>
-
-<%-- 
-<%
-	User user = (User)request.getAttribute("user");
-	request.setCharacterEncoding("EUC-KR");
-%>	
- --%>
-
  
 <html>
 <head>
@@ -66,7 +58,6 @@
 			이름 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<%-- <td class="ct_write01"><%=user.getUserName() %></td> --%>
 		<td class="ct_write01"> ${user.userName }  </td>
 	</tr>
 	<tr>
@@ -75,7 +66,6 @@
 	<tr>
 		<td width="104" class="ct_write">주소</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<%-- <td class="ct_write01"><%=user.getAddr() %></td> --%>
 		<td class="ct_write01"> ${user.addr } </td>
 	</tr>
 	<tr>
@@ -95,7 +85,6 @@
 		<td class="ct_write01">
 			<table border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<%-- <td height="26"><%=user.getEmail() %></td> --%>
 					<td height="26">${user.email }</td>
 				</tr>
 			</table>
@@ -108,7 +97,6 @@
 	<tr>
 		<td width="104" class="ct_write">가입일자</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<%-- <td class="ct_write01"><%=user.getRegDate() %></td> --%>
 		<td class="ct_write01">${user.regDate }</td>
 	</tr>
 
@@ -127,8 +115,7 @@
 						<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top:3px;">
-						<%-- <a href="/updateUserView.do?userId=<%=user.getUserId()%>">수정</a> --%>
-						<a href="/updateUserView?userId=${user.userId }">수정</a>
+						<a href="/user/updateUserView?userId=${user.userId }">수정</a>
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23">

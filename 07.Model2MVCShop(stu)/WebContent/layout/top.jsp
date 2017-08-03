@@ -39,7 +39,7 @@
 	          <%
 	          	if(user != null) {
 	          %>
-	            <a href="/logout.do" target="_parent">logout</a>  
+	            <a href="/user/logout.do" target="_parent">logout</a>  
 	           <%
 	          	}
 	           %>

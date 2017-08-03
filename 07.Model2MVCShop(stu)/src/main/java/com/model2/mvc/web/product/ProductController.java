@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,6 +27,7 @@ import com.model2.mvc.service.domain.Wish;
 import com.model2.mvc.service.product.ProductService;
 
 @Controller
+@RequestMapping("/product")
 public class ProductController {
 
 	@Autowired
@@ -42,7 +44,7 @@ public class ProductController {
 		System.out.println("productController() default Constructor ");
 	}
 
-	@RequestMapping("/addProduct.do")
+	@RequestMapping(value="/addProduct", method=RequestMethod.POST)
 	public ModelAndView addProduct(@ModelAttribute("product")Product product) throws Exception{
 		
 		product.setManuDate(CommonUtil.toStrDateStr(product.getManuDate()));
@@ -58,7 +60,7 @@ public class ProductController {
 		return modelAndView;
 	}
 	
-	@RequestMapping("/getProduct.do")
+	@RequestMapping(value="/getProduct")
 	public ModelAndView getProduct(@RequestParam("prodNo") String prodNo,
 									  @RequestParam(value="menu",defaultValue="") String menu,
 									  HttpServletRequest request, 
@@ -86,7 +88,7 @@ public class ProductController {
 		
 		if(menu!=""){
 			if(menu.equals("manage")){
-				modelAndView.setViewName("forward:/updateProductView.do");
+				modelAndView.setViewName("forward:/product/updateProductView.do");
 				return modelAndView;		
 			}
 		}
@@ -94,7 +96,7 @@ public class ProductController {
 		return modelAndView;
 	}
 	
-	@RequestMapping("/updateProductView.do")
+	@RequestMapping(value = "/updateProductView", method=RequestMethod.GET)
 	public ModelAndView updateProductView(@RequestParam("prodNo")String prodNo) throws NumberFormatException, Exception{
 		
 		Product product = productService.getProduct(Integer.parseInt(prodNo));
@@ -106,19 +108,19 @@ public class ProductController {
 		return modelAndView;
 	}
 	
-	@RequestMapping("/updateProduct.do")
+	@RequestMapping(value = "/updateProduct", method=RequestMethod.POST)
 	public ModelAndView updateProduct(@ModelAttribute("product")Product product) throws Exception{
 		
 		productService.updateProduct(product);
 
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("product",product);
-		modelAndView.setViewName("forward:/getProduct.do?prodNo="+product.getProdNo()+"&comePath=manage");
+		modelAndView.setViewName("forward:/product/getProduct?comePath=manage");
 		
 		return modelAndView;
 	}
 	
-	@RequestMapping("/listProduct.do")
+	@RequestMapping(value="/listProduct")
 	public ModelAndView listProduct(@ModelAttribute("search")Search search) throws Exception{
 
 		if(search.getCurrentPage()==0){
