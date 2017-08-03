@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PurchaseMapper">
+ 	
+ 	
+	<resultMap id="purchaseSelectMap" type="purchase">
+	
+		<result property="tranNo" column="tran_no" jdbcType="NUMERIC"/>
+		<result property="paymentOption" column="payment_option" jdbcType="CHAR"/>
+		<result property="receiverName" column="receiver_name" jdbcType="VARCHAR"/>
+		<result property="receiverPhone" column="receiver_phone" jdbcType="VARCHAR"/>
+		<result property="dlvyAddr" column="dlvy_addr" jdbcType="VARCHAR"/>
+		<result property="dlvyRequest" column="dlvy_request" jdbcType="VARCHAR"/>
+		<result property="tranCode" column="tran_status_code" jdbcType="CHAR"/>
+		<result property="orderDate" column="order_date" jdbcType="DATE"/>
+		<result property="dlvyDate" column="dlvy_date" jdbcType="DATE"/>
+		<result property="purchaseDate" column="purchase_date" jdbcType="DATE"/>
+		
+		<association property="purchaseProd"  javaType="product">
+			<id property="prodNo" column="prod_no" jdbcType="NUMERIC"/>
+			<result property="prodName" column="prod_name" jdbcType="VARCHAR"/>
+			<result property="prodDetail" column="prod_detail" jdbcType="VARCHAR"/>
+			<result property="manuDate" column="manufacture_day" jdbcType="VARCHAR"/>
+			<result property="price" column="price" jdbcType="NUMERIC"/>
+			<result property="fileName" column="image_file" jdbcType="VARCHAR"/>
+			<result property="regDate" column="prod_reg_date" jdbcType="DATE"/>
+			<result property="tranStatusCode" column="TRAN_STATUS_CODE" jdbcType="VARCHAR"/>
+		</association>
+		
+		<association property="buyer"  javaType="user">
+			<id property="userId" column="buyer_id" jdbcType="VARCHAR"/>
+			<result property="userName" column="user_name" jdbcType="VARCHAR"/>
+			<result property="password" column="password" jdbcType="VARCHAR"/>
+			<result property="role" column="role" jdbcType="VARCHAR"/>
+			<result property="ssn" column="ssn" jdbcType="VARCHAR"/>
+			<result property="phone" column="cell_phone" jdbcType="VARCHAR"/>
+			<result property="addr" column="addr" jdbcType="VARCHAR"/>
+			<result property="email" column="email" jdbcType="VARCHAR"/>
+			<result property="regDate" column="user_reg_date" jdbcType="DATE"/>
+		</association>
+	</resultMap>
+	
+	<resultMap id="wishSelectMap" type="wish">
+		<result property="wishNo" column="wish_no" jdbcType="NUMERIC"/>
+		<result property="prodNo" column="prod_no" jdbcType="NUMERIC"/>
+		<result property="usreId" column="user_id" jdbcType="VARCHAR"/>
+		<result property="tranStatusCode" column="tran_status_code" jdbcType="VARCHAR"/>
+		<result property="regDate" column="reg_date" jdbcType="DATE"/>
+		
+		<association property="purchaseProd"  javaType="product">
+			<id property="prodNo" column="prod_no" jdbcType="NUMERIC"/>
+			<result property="prodName" column="prod_name" jdbcType="VARCHAR"/>
+			<result property="prodDetail" column="prod_detail" jdbcType="VARCHAR"/>
+			<result property="manuDate" column="manufacture_day" jdbcType="VARCHAR"/>
+			<result property="price" column="price" jdbcType="NUMERIC"/>
+			<result property="fileName" column="image_file" jdbcType="VARCHAR"/>
+			<result property="regDate" column="prod_reg_date" jdbcType="DATE"/>
+			<result property="tranStatusCode" column="TRAN_STATUS_CODE" jdbcType="VARCHAR"/>
+		</association>
+	</resultMap>
+	
+	<!-- SQL : INSERT -->
+	<insert 	id="addPurchase"		parameterType="purchase" >
+	 	INSERT INTO transaction (tran_no, prod_no, buyer_id, 
+	 							payment_option, receiver_name, receiver_phone, 
+	 							dlvy_addr, dlvy_request, tran_status_code, order_date,dlvy_date)
+	 							 
+		VALUES	 (	seq_transaction_tran_no.nextval, #{purchaseProd.prodNo}, #{buyer.userId} ,
+					 #{paymentOption:CHAR}, #{receiverName:VARCHAR}, #{receiverPhone:VARCHAR},
+					 #{dlvyAddr:VARCHAR}, #{dlvyRequest:VARCHAR}, 1, sysdate, #{dlvyDate:DATE} )
+	 </insert>
+	 
+	 <insert 	id="addWish"		parameterType="purchase" >
+	 	INSERT INTO wish (wish_no, prod_no, user_id, 
+	 				 	  tran_status_code, reg_date)
+	 							 
+		VALUES	 (	seq_transaction_tran_no.nextval, #{purchaseProd.prodNo}, 
+					#{buyer.userId}, null, sysdate)
+	 </insert>
+
+	 <!-- SQL : SELECT ONE -->
+	 <select 	id="getPurchase"	parameterType="string"	resultMap="purchaseSelectMap">
+		SELECT
+		tran_no, prod_no, buyer_id, payment_option, receiver_name, receiver_phone, 
+	 	dlvy_addr, dlvy_request, tran_status_code, order_date,dlvy_date
+		FROM transaction 
+		WHERE tran_no = ${value}
+	 </select>
+	 
+	 <!-- SQL : UPDATE -->
+	<update	id="updatePurchase"	parameterType="purchase" >
+	   	UPDATE transaction
+		<set>
+			payment_option = #{paymentOption:CHAR},
+			receiver_name=#{receiverName:VARCHAR},
+			receiver_phone=#{receiverPhone:VARCHAR},
+			dlvy_addr=#{dlvyAddr:VARCHAR},
+			dlvy_request=#{dlvyRequest:VARCHAR},
+			dlvy_date=#{dlvyDate:DATE}
+		</set>
+		 	WHERE tran_no=#{tranNo:NUMERIC}
+	 </update>
+	 
+	 
+	<delete id="removePurchase" parameterType="string">
+		DELETE
+		FROM transaction
+		WHERE tran_no=#{value}
+	</delete>
+	
+	<delete id="removeWishPurchase" parameterType="string">
+		DELETE
+		FROM wish
+		WHERE wish_no=#{value}
+	</delete>
+		 
+	<!-- SQL : SELECT LIST -->
+	<select  id="getPurchaseList"  parameterType="map"	resultMap="purchaseSelectMap">
+	SELECT *							
+	FROM	(SELECT 	inner_table.* , ROWNUM AS row_seq				
+		 	 FROM 		(SELECT ts.tran_no, ts.buyer_id, ts.prod_no, ts.receiver_name, ts.receiver_phone, ts.tran_status_code
+						 FROM transaction ts
+								<where>
+									<if test="buyerId!=null">
+									ts.buyer_id=#{buyerId:VARCHAR}
+									</if>
+								</where>
+										) inner_table
+						WHERE ROWNUM &lt;=${search.currentPage*search.pageUnit} )
+	WHERE row_seq BETWEEN ${(search.currentPage-1)*search.pageUnit+1} AND ${search.currentPage*search.pageUnit}
+	</select> 
+	
+	<select  id="getWishList"  parameterType="map"	resultMap="wishSelectMap">
+	SELECT *							
+	FROM	(SELECT 	inner_table.* , ROWNUM AS row_seq				
+		 	 FROM 		(SELECT w.wish_no, p.prod_no, p.prod_name,
+		 	 				 p.price, p.reg_date AS prod_reg_date, p.tran_status_code 
+						 FROM wish w, product p
+								<where>
+									<if test="userId!=null">
+									w.user_id =#{userId:VARCHAR} 
+									</if>
+									AND w.prod_no=p.prod_no
+								</where>
+										) inner_table
+						WHERE ROWNUM &lt;=${search.currentPage*search.pageUnit} )
+	WHERE row_seq BETWEEN ${(search.currentPage-1)*search.pageUnit+1} AND ${search.currentPage*search.pageUnit}
+	</select> 
+	
+	<select  id="getSaleList"  parameterType="search"	resultMap="purchaseSelectMap">
+	SELECT *							
+	FROM	(SELECT 	inner_table.* , ROWNUM AS row_seq				
+		 	 FROM 		(SELECT p.prod_no, p.prod_name, p.price, ts.purchase_date, ts.buyer_id
+						 FROM transaction ts, product p
+								<where>
+									ts.prod_no = p.prod_no AND p.tran_status_code=3
+								</where>
+										) inner_table
+						WHERE ROWNUM &lt;=${currentPage*pageUnit} )
+	WHERE row_seq BETWEEN ${(currentPage-1)*pageUnit+1} AND ${currentPage*pageUnit}
+	</select> 
+	
+	 	<!--  위 두번째 subQuery 의  
+	 			WHERE ROWNUM &lt;= #{endRowNum} ) 는
+	 			WHERE ROWNUM <= #{endRowNum} ) 의미이며..
+	 			< 는 keyword 로 &lt; 를	사용.
+	 			
+	 			<![CDATA[  ~~~  ]]> 를 이용하여 아래와 같이 사용  할 수 있다.
+	 			CDATA ==> Character Data 의 의미 Java 에서 \n 같은 특수문자 처리  
+
+				WHERE ROWNUM <![CDATA[ <=]]> #{endRowNum} )
+		-->
+	
+	<!-- SQL : SELECT ROW Count -->	 
+	 <select  id="getTotalCount"  parameterType="map"	 resultType="_int">
+	  	SELECT COUNT(*)
+		FROM ( 
+			   <if test='where=="purchaseList"'>
+			   SELECT tran_no, buyer_id, prod_no, receiver_name, receiver_phone, tran_status_code
+			   FROM transaction
+			   WHERE buyer_id=#{userId}) countTable		
+			   </if>
+			   <if test='where=="wishList"'>
+			   SELECT wish_no, prod_no, user_id, tran_status_code, reg_date
+			   FROM wish
+			   WHERE user_id=#{userId}) countTable		
+			   </if>
+			   <if test='where=="saleList"'>
+			   SELECT prod_no
+			   FROM product
+			   WHERE tran_status_code=#{tranCode}) countTable		
+			   </if>
+	 </select>
+	 
+	 <update	id="updateTranCode"	parameterType="map" >
+	   	UPDATE transaction
+		<set>
+			tran_status_code = #{tranCode}
+			<if test = "tranCode==3">
+				purchase_date = #{purchaseDate}
+			</if>
+		</set>
+			<if test = "prodNo!=null">
+		 		WHERE prod_no=#{prodNo}
+		 	</if>
+		 	<if test = "tranNo!=null">
+		 		WHERE tran_no=#{tranNo}
+		 	</if>
+	 </update>
+	 
+</mapper>
