@@ -201,7 +201,7 @@
 		<set>
 			tran_status_code = #{tranCode}
 			<if test = "tranCode==3">
-				purchase_date = #{purchaseDate}
+				, purchase_date=sysdate
 			</if>
 		</set>
 			<if test = "prodNo!=null">

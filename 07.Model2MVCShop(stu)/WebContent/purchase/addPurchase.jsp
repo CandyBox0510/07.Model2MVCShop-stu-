@@ -20,7 +20,7 @@
 
 <body>
 
-<form name="updatePurchase" action="/updatePurchaseView.do?tranNo=<%=purchase.getTranNo()%>" method="post">
+<form name="updatePurchase" action="/purchase/updatePurchaseView?tranNo=<%=purchase.getTranNo()%>" method="post">
 
 다음과 같이 구매가 되었습니다.
 

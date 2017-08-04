@@ -32,7 +32,7 @@ function fncAddPurchase() {
 
 <body>
 
-<form name="addPurchase" method="post" action="/addPurchase.do">
+<form name="addPurchase" method="post" action="/purchase/addPurchase">
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -53,7 +53,7 @@ function fncAddPurchase() {
 	</tr>
 </table>
 
-<input type="hidden" name="purchase.prodNo" value="${param.prodNo }" />
+<input type="hidden" name="purchaseProd.prodNo" value="${param.prodNo }" />
 
 <table width="600" border="0" cellspacing="0" cellpadding="0"	align="center" style="margin-top: 13px;">
 	<tr>
@@ -125,7 +125,7 @@ function fncAddPurchase() {
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01"><%=user.getUserId() %></td>
-		<input type="hidden" name="buyerId" value="<%=user.getUserId() %>" />
+		<input type="hidden" name="buyer.buyerId" value="<%=user.getUserId() %>" />
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>

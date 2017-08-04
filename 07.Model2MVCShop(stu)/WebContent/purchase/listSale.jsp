@@ -21,7 +21,7 @@
 
 <div style="width: 98%; margin-left: 10px;">
 
-<form name="detailForm" action="/listWishPurchase.do" method="post">
+<form name="detailForm" action="/purchase/listSale" method="post">
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -66,7 +66,7 @@
 			<td></td>
 			
 			<td align="left">
-				<a href="/getProduct.do?comePath=saleList&menu=search&prodNo=${sale.purchaseProd.prodNo }"> ${sale.purchaseProd.prodName }</a>
+				<a href="/product/getProduct?comePath=saleList&menu=search&prodNo=${sale.purchaseProd.prodNo }"> ${sale.purchaseProd.prodName }</a>
 			</td>
 			<td></td>
 			<td align="left">${sale.purchaseProd.price }</td>

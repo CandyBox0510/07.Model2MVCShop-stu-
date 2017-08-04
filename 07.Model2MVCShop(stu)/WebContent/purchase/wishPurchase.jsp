@@ -21,7 +21,7 @@
 
 <div style="width: 98%; margin-left: 10px;">
 
-<form name="detailForm" action="/listPurchase.do" method="post">
+<form name="detailForm" action="/purchase/listPurchase" method="post">
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -39,7 +39,6 @@
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0"	style="margin-top: 10px;">
 	<tr>
-		<%-- <td colspan="11">전체 <%=total %> 건수, 현재 <%=currentPage %> 페이지</td> --%>
 		<td colspan="11">전체 ${resultPage.totalCount } 건수, 현재 ${resultPage.currentPage } 페이지</td>
 	</tr>
 	<tr>
@@ -60,40 +59,13 @@
 	</tr>
 
 	
-	
-	<%-- <%	int no = productList.size(); 
-		for(int i = 0; i<productList.size(); i++){ %>
-	<tr class="ct_list_pop">
-		<td align="center">
-			<a href="/getPurchase.do?tranNo=<%=purchaseList.get(i).getTranNo()%>"><%=no--%></a>
-		<%-- </td>
-		<td></td>
-		<td align="left">
-			<a href="/getUser.do?userId=<%=user.getUserId()%>"><%=user.getUserId()%></a>
-		</td>
-		<td></td>
-		<td align="left"><%=user.getUserName() %></td>
-		<td></td>
-		<td align="left"><%=user.getPhone() %></td>
-		<td></td>
-		<td align="left">현재
-					<%=purchaseList.get(i).getTranCode() %>
-				상태 입니다.</td>
-		<td></td>
-		<td align="left">
-			
-		</td>
-	</tr> 
-	<%} %> --%>
-	
-	
 	<c:set var="i" value="0"/>
 		<c:forEach var="purchase" items="${purchaseList }">
 			<c:set var="i" value="${i+1 }"/>
 			<tr class="ct_list_pop">
 			<td align="center">
 				<c:if test="${purchase.tranCode eq 1 }">
-				<a href="/getPurchase.do?tranNo=${purchase.tranNo }"> ${i}</a>
+				<a href="/purchase/getPurchase?tranNo=${purchase.tranNo }"> ${i}</a>
 				</c:if>
 				<c:if test="${purchase.tranCode ne 1 }">
 				${i}
@@ -103,7 +75,7 @@
 			<td align="left">
 				<%-- <a href="/getUser.do?userId=${user.userId }"> ${user.userId }</a> --%>
 				<c:if test="${purchase.tranCode eq 1 }">
-				<a href="/getProduct.do?&comePath=purchaser&menu=search&prodNo=${purchase.purchaseProd.prodNo }"> ${purchase.purchaseProd.prodName }</a>
+				<a href="/product/getProduct?&comePath=purchaser&menu=search&prodNo=${purchase.purchaseProd.prodNo }"> ${purchase.purchaseProd.prodName }</a>
 				</c:if>
 				<c:if test="${purchase.tranCode ne 1 }">
 				${purchase.purchaseProd.prodName }
@@ -131,7 +103,7 @@
 			<td></td>
 			<td align="left">	
 			<c:if test="${! empty purchase.tranCode && purchase.tranCode eq 2}">
-			<a href="updateTranCode.do?tranNo=${purchase.tranNo }&tranCode=3">물건도착</a>
+			<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo }&tranCode=3">물건도착</a>
 			</c:if>
 		</td>
 	</tr>

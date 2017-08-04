@@ -161,7 +161,7 @@
 				<c:if test="${!empty param.menu && param.menu eq 'manage' }">
 					<c:choose>
 						<c:when test="${product.tranStatusCode eq 1 }">
-							구매완료 / <a href="/product/updateTranCodeByProd?prodNo=${product.prodNo}&tranCode=2">배송하기</a>
+							구매완료 / <a href="/purchase/updateTranCodeByProd?prodNo=${product.prodNo}&tranCode=2">배송하기</a>
 						</c:when>
 						<c:when test="${product.tranStatusCode eq 2 }">
 							배송중
@@ -182,7 +182,7 @@
 			장바구니 불가(재고X)
 			</c:if>
 			<c:if test="${product.tranStatusCode eq null}">
-			<a href="/product/addWishPurchase?prodNo=${product.prodNo }">장바구니 담기</a>
+			<a href="/purchase/addWishPurchase?prodNo=${product.prodNo }">장바구니 담기</a>
 			</c:if>
 		</td>
 		</c:if>	

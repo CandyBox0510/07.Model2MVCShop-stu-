@@ -27,7 +27,7 @@ import com.model2.mvc.service.domain.Wish;
 import com.model2.mvc.service.product.ProductService;
 
 @Controller
-@RequestMapping("/product")
+@RequestMapping("/product/*")
 public class ProductController {
 
 	@Autowired
@@ -44,7 +44,7 @@ public class ProductController {
 		System.out.println("productController() default Constructor ");
 	}
 
-	@RequestMapping(value="/addProduct", method=RequestMethod.POST)
+	@RequestMapping(value="addProduct", method=RequestMethod.POST)
 	public ModelAndView addProduct(@ModelAttribute("product")Product product) throws Exception{
 		
 		product.setManuDate(CommonUtil.toStrDateStr(product.getManuDate()));
@@ -60,14 +60,14 @@ public class ProductController {
 		return modelAndView;
 	}
 	
-	@RequestMapping(value="/getProduct")
+	@RequestMapping(value="getProduct")
 	public ModelAndView getProduct(@RequestParam("prodNo") String prodNo,
 									  @RequestParam(value="menu",defaultValue="") String menu,
 									  HttpServletRequest request, 
 									  HttpServletResponse response,
 									  @CookieValue(value="history",defaultValue="") String history)
 									  throws Exception{
-		
+		System.out.println("Cookie History"+history);
 		Cookie cookie=null;
 		if(history == ""){
 			cookie = new Cookie("history",prodNo);
@@ -88,7 +88,7 @@ public class ProductController {
 		
 		if(menu!=""){
 			if(menu.equals("manage")){
-				modelAndView.setViewName("forward:/product/updateProductView.do");
+				modelAndView.setViewName("forward:/product/updateProduct");
 				return modelAndView;		
 			}
 		}
@@ -96,7 +96,7 @@ public class ProductController {
 		return modelAndView;
 	}
 	
-	@RequestMapping(value = "/updateProductView", method=RequestMethod.GET)
+	@RequestMapping(value = "updateProduct", method=RequestMethod.GET)
 	public ModelAndView updateProductView(@RequestParam("prodNo")String prodNo) throws NumberFormatException, Exception{
 		
 		Product product = productService.getProduct(Integer.parseInt(prodNo));
@@ -108,7 +108,7 @@ public class ProductController {
 		return modelAndView;
 	}
 	
-	@RequestMapping(value = "/updateProduct", method=RequestMethod.POST)
+	@RequestMapping(value = "updateProduct", method=RequestMethod.POST)
 	public ModelAndView updateProduct(@ModelAttribute("product")Product product) throws Exception{
 		
 		productService.updateProduct(product);
@@ -120,7 +120,7 @@ public class ProductController {
 		return modelAndView;
 	}
 	
-	@RequestMapping(value="/listProduct")
+	@RequestMapping(value="listProduct")
 	public ModelAndView listProduct(@ModelAttribute("search")Search search) throws Exception{
 
 		if(search.getCurrentPage()==0){

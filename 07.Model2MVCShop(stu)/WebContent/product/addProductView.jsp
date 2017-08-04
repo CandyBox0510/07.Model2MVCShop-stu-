@@ -36,7 +36,7 @@ function fncAddProduct(){
 		return;
 	}
 
-	document.detailForm.action='/product/addProduct.do';
+	document.detailForm.action='/product/addProduct';
 	document.detailForm.submit();
 }
 

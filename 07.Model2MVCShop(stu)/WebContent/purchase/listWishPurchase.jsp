@@ -21,7 +21,7 @@
 
 <div style="width: 98%; margin-left: 10px;">
 
-<form name="detailForm" action="/listWishPurchase.do" method="post">
+<form name="detailForm" action="/purchase/listWishPurchase" method="post">
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -67,7 +67,7 @@
 			
 			<td align="left">
 				<c:if test="${wish.tranStatusCode eq null}">
-				<a href="/getProduct.do?&menu=search&prodNo=${wish.purchaseProd.prodNo }"> ${wish.purchaseProd.prodName }</a>
+				<a href="/product/getProduct?&menu=search&prodNo=${wish.purchaseProd.prodNo }"> ${wish.purchaseProd.prodName }</a>
 				</c:if>
 				<c:if test="${!empty wish.tranStatusCode}">
 				${wish.purchaseProd.prodName }(구매불가 재고X)
@@ -79,7 +79,7 @@
 			<td align="left">${wish.purchaseProd.regDate }</td>
 			<td></td>
 			<td align="center">
-				<a href="/cancelWishPurchase.do?wishNo=${wish.wishNo}">취소</a>
+				<a href="/purchase/cancelWishPurchase?wishNo=${wish.wishNo}">취소</a>
 			</td>
 	</tr>
 	</c:forEach>

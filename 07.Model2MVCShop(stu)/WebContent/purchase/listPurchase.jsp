@@ -22,7 +22,7 @@
 
 <div style="width: 98%; margin-left: 10px;">
 
-<form name="detailForm" action="/listPurchase.do" method="post">
+<form name="detailForm" action="/purchase/listPurchase" method="post">
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -68,7 +68,7 @@
 			<tr class="ct_list_pop">
 			<td align="center">
 				<c:if test="${purchase.tranCode eq 1 }">
-				<a href="/getPurchase.do?tranNo=${purchase.tranNo }"> ${i}</a>
+				<a href="/purchase/getPurchase?tranNo=${purchase.tranNo }"> ${i}</a>
 				</c:if>
 				<c:if test="${purchase.tranCode ne 1 }">
 				${i}
@@ -77,7 +77,7 @@
 			<td></td>
 			<td align="left">
 				<c:if test="${purchase.tranCode eq 1 }">
-				<a href="/getProduct.do?&comePath=purchaser&menu=search&prodNo=${purchase.purchaseProd.prodNo }"> ${purchase.purchaseProd.prodName }</a>
+				<a href="/product/getProduct?&comePath=purchaser&menu=search&prodNo=${purchase.purchaseProd.prodNo }"> ${purchase.purchaseProd.prodName }</a>
 				</c:if>
 				<c:if test="${purchase.tranCode ne 1 }">
 				${purchase.purchaseProd.prodName }
@@ -105,7 +105,7 @@
 			<td></td>
 			<td align="left">	
 			<c:if test="${! empty purchase.tranCode && purchase.tranCode eq 2}">
-			<a href="updateTranCode.do?tranNo=${purchase.tranNo }&tranCode=3">¹°°ÇµµÂø</a>
+			<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo }&tranCode=3">¹°°ÇµµÂø</a>
 			</c:if>
 		</td>
 	</tr>

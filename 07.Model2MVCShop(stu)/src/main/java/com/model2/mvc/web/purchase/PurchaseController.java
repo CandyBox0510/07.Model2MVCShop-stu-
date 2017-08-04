@@ -4,18 +4,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.model2.mvc.common.Page;
 import com.model2.mvc.common.Search;
@@ -27,7 +27,8 @@ import com.model2.mvc.service.domain.Wish;
 import com.model2.mvc.service.product.ProductService;
 import com.model2.mvc.service.purchase.PurchaseService;
 
-@RestController
+@Controller
+@RequestMapping("/purchase/*")
 public class PurchaseController {
 	
 	@Autowired
@@ -48,11 +49,10 @@ public class PurchaseController {
 		System.out.println("PurchaseController() default Constructor");
 	}
 	
-	@RequestMapping("/addPurchase.do")
+	@RequestMapping(value="addPurchase", method=RequestMethod.POST)
 	public String addPurchase(@ModelAttribute("purchase")Purchase purchase,
 								HttpSession session,
 								Model model) throws Exception{
-
 
 		purchase.setBuyer((User)session.getAttribute("user"));
 		purchase.setDlvyDate(CommonUtil.toStrDateStr(purchase.getDlvyDate()));
@@ -67,7 +67,7 @@ public class PurchaseController {
 		return "forward:/purchase/addPurchase.jsp";
 	}
 	
-	@RequestMapping("/addPurchaseView.do")
+	@RequestMapping(value="addPurchase", method=RequestMethod.GET)
 	public String addPurchaseView(@RequestParam("prodNo")String prodNo,
 									@ModelAttribute("purchase")Purchase purchase,
 									HttpSession session,
@@ -83,18 +83,18 @@ public class PurchaseController {
 		return "forward:/purchase/addPurchaseView.jsp";
 	}
 	
-	@RequestMapping("/getPurchase.do")
+	@RequestMapping(value="getPurchase")
 	public String getPurchase(@RequestParam("tranNo")String tranNo,
 								 Model model) throws NumberFormatException, Exception{
 		Purchase purchase = purchaseService.getPurchase(Integer.parseInt(tranNo));
-		
+		purchase.setPaymentOption(purchase.getPaymentOption().trim());
 		System.out.println("겟펄쳐스액션"+purchase);
 		model.addAttribute("purchase", purchase);
 		
 		return "forward:/purchase/getPurchase.jsp";
 	}
 	
-	@RequestMapping("/updatePurchaseView.do")
+	@RequestMapping(value="updatePurchaseView", method=RequestMethod.GET)
 	public String updatePurchaseView(@ModelAttribute("purchase")Purchase purchase,
 										@RequestParam("tranNo")String tranNo,
 										Model model) throws Exception{
@@ -105,17 +105,17 @@ public class PurchaseController {
 		return "forward:/purchase/updatePurchaseView.jsp";
 	}
 	
-	@RequestMapping("/updatePurchase.do")
+	@RequestMapping(value="updatePurchase", method=RequestMethod.POST)
 	public String updatePurchase(@ModelAttribute("purchase")Purchase purchase) throws Exception{
 		
 		purchase.setDlvyDate(CommonUtil.toDateStr(purchase.getDlvyDate()));
 		
 		purchaseService.updatePurchase(purchase);
-		return "forward:/getPurchase.do";
+		return "forward:/purchase/getPurchase.do";
 		
 	}
 	
-	@RequestMapping("/listPurchase.do")
+	@RequestMapping(value="listPurchase")
 	public String listPurchase(@ModelAttribute("search")Search search,
 								  HttpSession session,
 								  Model model) throws Exception{
@@ -156,7 +156,7 @@ public class PurchaseController {
 		return "forward:/purchase/listPurchase.jsp";
 	}
 	
-	@RequestMapping("/listSale.do")
+	@RequestMapping(value="listSale")
 	public String listSale(@ModelAttribute("search")Search search,
 							 Model model) throws Exception{
 		
@@ -180,7 +180,7 @@ public class PurchaseController {
 		return "forward:/purchase/listSale.jsp";
 	}
 	
-	@RequestMapping("/updateTranCode.do")
+	@RequestMapping(value="updateTranCode", method=RequestMethod.GET)
 	public String updateTranCode(@RequestParam("tranNo")String tranNo,
 									@RequestParam("tranCode")String tranCode) throws NumberFormatException, Exception{
 		Map<String, Object>map = new HashMap<String, Object>();
@@ -191,10 +191,10 @@ public class PurchaseController {
 		productService.updateProductTranCode(map);
 		//여기서 펄쳐스데이 넣어야함
 		
-		return "forward:/listPurchase.do";
+		return "forward:/purchase/listPurchase.do";
 	}
 	
-	@RequestMapping("/updateTranCodeByProd.do")
+	@RequestMapping(value="updateTranCodeByProd",method=RequestMethod.GET)
 	public String updateTranCodeByProd(@RequestParam("prodNo")String prodNo,
 											@RequestParam("tranCode")String tranCode) throws Exception{
 		Map<String, Object>map = new HashMap<String, Object>();
@@ -203,10 +203,10 @@ public class PurchaseController {
 		purchaseService.updateTranCode(map);
 		productService.updateProductTranCode(map);
 				
-		return "forward:/listProduct.do?menu=manage";
+		return "forward:/product/listProduct.do?menu=manage";
 	}
 	
-	@RequestMapping("/cancelPurchase.do")
+	@RequestMapping(value="cancelPurchase", method=RequestMethod.GET)
 	public String cancelPurchase(@RequestParam("tranNo")String tranNo) throws Exception{
 		Map<String, Object>map = new HashMap<String, Object>();
 		map.put("prodNo", productService.getProductNo(Integer.parseInt(tranNo)));
@@ -214,10 +214,10 @@ public class PurchaseController {
 		productService.updateProductTranCode(map);
 		purchaseService.deletePurchase(tranNo);
 		
-		return "forward:/listPurchase.do";
+		return "forward:/purchase/listPurchase.do";
 	}
 	
-	@RequestMapping("/addWishPurchase.do")
+	@RequestMapping(value="addWishPurchase", method=RequestMethod.GET)
 	public String addWishPurchase(@ModelAttribute("purchase")Purchase purchase,
 									  @RequestParam("prodNo")String prodNo,
 									  HttpSession session,
@@ -233,10 +233,10 @@ public class PurchaseController {
 		
 		model.addAttribute("wishSuccess", "success");
 		
-		return "forward:/listProduct.do?menu=search";
+		return "forward:/product/listProduct.do?menu=search";
 	}
 	
-	@RequestMapping("/listWishPurchase.do")
+	@RequestMapping(value="listWishPurchase")
 	public String listWishPurchase(@ModelAttribute("search")Search search,
 										HttpSession session,
 										Model model) throws Exception{
@@ -274,11 +274,11 @@ public class PurchaseController {
 		return "forward:/purchase/listWishPurchase.jsp";
 	}
 	
-	@RequestMapping("/cancelWishPurchase.do")
+	@RequestMapping(value="cancelWishPurchase", method=RequestMethod.GET)
 	public String cancelWishPurchase(@RequestParam("wishNo")String wishNo) throws Exception{
 		purchaseService.deleteWishPurchase(wishNo);
 		
-		return "forward:/listWishPurchase.do";
+		return "forward:/purchase/listWishPurchase.do";
 	}
 	
 }
