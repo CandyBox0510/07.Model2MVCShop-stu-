@@ -65,17 +65,19 @@ public class ProductController {
 									  @RequestParam(value="menu",defaultValue="") String menu,
 									  HttpServletRequest request, 
 									  HttpServletResponse response,
-									  @CookieValue(value="history",defaultValue="") String history)
+									  @CookieValue(value="history",required=false) String history)
 									  throws Exception{
-		System.out.println("Cookie History"+history);
+		System.out.println("Cookie History : "+history);
 		Cookie cookie=null;
-		if(history == ""){
+		if(history == null){
 			cookie = new Cookie("history",prodNo);
+			System.out.println("히스토리가 널일때 첫생성");
 		}else{
 			cookie = new Cookie("history",history+","+prodNo);
+			System.out.println("히스토리가 널이 아닐때 전쿠키에 추가");
 		}
-		
-		cookie.setMaxAge(60*5);
+		cookie.setMaxAge(60*3);
+		cookie.setPath("/");
 		response.addCookie(cookie);
 					
 		//ProductService service=new ProductServiceImpl();
