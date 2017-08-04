@@ -52,6 +52,17 @@
 
 <!-- 		::	Client 에 보여줄 Data(Model) 랜더링 / view 화면 Navigation 하는ViewResolver 
 			:: 아래와 같이 서술적 기술 Test 후 주석처리해서 Test 할것 :: Default / Zero Configuration --> 
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    	<property name="maxUploadSize" value="5242880000"></property>
+    	<property name="uploadTempDir" ref="fileSystemResource"/>
+    </bean>
+    
+    <bean id="fileSystemResource" class="org.springframework.core.io.FileSystemResource">
+	<constructor-arg>
+		<value>..\\Users\\KO\\git\\07.Model2MVCShop(stu)\\07.Model2MVCShop(stu)\\WebContent\\images\\uploadFiles</value>
+	</constructor-arg>
+	</bean>
+			
     <bean id="exceptionResolver" 
     			class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver" >	
 		<property name="exceptionMappings">

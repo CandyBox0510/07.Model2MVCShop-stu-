@@ -1,21 +1,30 @@
 package com.model2.mvc.web.product;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.model2.mvc.common.Page;
@@ -45,18 +54,41 @@ public class ProductController {
 	}
 
 	@RequestMapping(value="addProduct", method=RequestMethod.POST)
-	public ModelAndView addProduct(@ModelAttribute("product")Product product) throws Exception{
+	public ModelAndView addProduct(@ModelAttribute("product")Product product,
+										@RequestParam("imageFile")MultipartFile fileName,
+										HttpSession session)throws Exception{
+		
+
+		String uploadFiles = session.getServletContext().getRealPath("/images/uploadFiles");
+		System.out.println("session of getRealPath"+session.getServletContext().getRealPath("/images/uploadFiles"));
+		String originalFilename = fileName.getOriginalFilename();
+		System.out.println("file of OriginalFileName"+fileName.getOriginalFilename());
+		String fullPath = uploadFiles + "\\" + originalFilename;
+		System.out.println("fullPath"+fullPath);
+		if (!fileName.isEmpty()) {
+			try {
+				product.setFileName(fileName.getOriginalFilename());
+				File file = new File(fullPath);
+				fileName.transferTo(file);
+
+//				OutputStream os = new FileOutputStream(file);
+//				os.write(fileName.getBytes());
+//				os.flush();
+//				os.close();
+
+			} catch (Exception e) {
+			}
+		} else {
+			System.out.println("파일이 비어있습니다.");
+		}
+		
+
 		
 		product.setManuDate(CommonUtil.toStrDateStr(product.getManuDate()));
 		productService.addProduct(product);
-		
-		
 		ModelAndView modelAndView = new ModelAndView();
-		
 		modelAndView.setViewName("forward:/product/addProduct.jsp");
-		
-		modelAndView.addObject("product",product);
-		
+		modelAndView.addObject("product", product);
 		return modelAndView;
 	}
 	

@@ -78,7 +78,7 @@
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
 			<%-- <img src = <%=product.getFileName() %>>  --%>
-			<img src = ${product.fileName }>
+			<img src = "/images/uploadFiles/${product.fileName}">
 		</td>
 	</tr>
 	<tr>
