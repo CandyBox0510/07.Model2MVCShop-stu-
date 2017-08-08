@@ -1,11 +1,7 @@
 package com.model2.mvc.web.product;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,9 +25,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.model2.mvc.common.Page;
 import com.model2.mvc.common.Search;
 import com.model2.mvc.common.util.CommonUtil;
+import com.model2.mvc.service.domain.Comment;
 import com.model2.mvc.service.domain.Product;
-import com.model2.mvc.service.domain.Purchase;
-import com.model2.mvc.service.domain.Wish;
+import com.model2.mvc.service.domain.User;
 import com.model2.mvc.service.product.ProductService;
 
 @Controller
@@ -77,6 +72,7 @@ public class ProductController {
 //				os.close();
 
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		} else {
 			System.out.println("파일이 비어있습니다.");
@@ -97,8 +93,12 @@ public class ProductController {
 									  @RequestParam(value="menu",defaultValue="") String menu,
 									  HttpServletRequest request, 
 									  HttpServletResponse response,
-									  @CookieValue(value="history",required=false) String history)
+									  HttpSession session,
+									  @CookieValue(value="history",required=false) String history,
+									  @RequestParam(value="userComment", required=false)String userComment)
 									  throws Exception{
+		
+		//쿠키 관리를 위한 부분
 		System.out.println("Cookie History : "+history);
 		Cookie cookie=null;
 		if(history == null){
@@ -111,12 +111,29 @@ public class ProductController {
 		cookie.setMaxAge(60*3);
 		cookie.setPath("/");
 		response.addCookie(cookie);
-					
-		//ProductService service=new ProductServiceImpl();
-		Product product= productService.getProduct(Integer.parseInt(prodNo));
 		
+		
+		//댓글을 위한 부분
+		System.out.println("userComment asdf = "+userComment);
+		if(userComment != null){
+			Map<String, Object> map = new HashMap<String, Object>();
+			User user = (User)(session.getAttribute("user"));
+			map.put("userId", user.getUserId());
+			map.put("comments", userComment);
+			map.put("prodNo", prodNo);
+			productService.addProductComment(map);
+		}
+		List<Comment> list = productService.getProductComment(prodNo);
+		
+		Product product= productService.getProduct(Integer.parseInt(prodNo));
+		if(product.getTranStatusCode() != null){
+			product.setTranStatusCode(product.getTranStatusCode().trim());	
+		}
+		
+				
 		ModelAndView modelAndView = new ModelAndView();
 		
+		modelAndView.addObject("list",list);
 		modelAndView.addObject("product",product);
 		
 		
@@ -197,4 +214,15 @@ public class ProductController {
 		
 		return modelAndView;
 	}
+	
+	@RequestMapping(value="commentDelete", method=RequestMethod.GET)
+	public ModelAndView commentDelete(@RequestParam("productCommentNo")String productCommentNo) throws Exception{
+		
+		productService.deleteProductComment(productCommentNo);
+		
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("forward:/product/getProduct");
+		return modelAndView;
+	}
+	
 }

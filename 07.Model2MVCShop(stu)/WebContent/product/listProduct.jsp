@@ -131,12 +131,7 @@
 		<td align="center">${i}</td>
 		<td></td>		
 		<td align="left">
-			<c:if test="${product.tranStatusCode ne null}">
-			${product.prodName}
-			</c:if>
-			<c:if test="${product.tranStatusCode eq null}">
 			<a href="/product/getProduct?prodNo=${product.prodNo}&menu=${param.menu}">${product.prodName}</a>
-			</c:if>
 		</td>	
 		<td></td>
 		<td align="left">${product.price }</td>

@@ -111,7 +111,7 @@ public class PurchaseController {
 		purchase.setDlvyDate(CommonUtil.toDateStr(purchase.getDlvyDate()));
 		
 		purchaseService.updatePurchase(purchase);
-		return "forward:/purchase/getPurchase.do";
+		return "forward:/purchase/getPurchase";
 		
 	}
 	
@@ -189,7 +189,6 @@ public class PurchaseController {
 		purchaseService.updateTranCode(map);
 		map.put("prodNo", productService.getProductNo(Integer.parseInt(tranNo)));
 		productService.updateProductTranCode(map);
-		//여기서 펄쳐스데이 넣어야함
 		
 		return "forward:/purchase/listPurchase.do";
 	}

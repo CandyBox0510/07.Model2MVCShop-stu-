@@ -2,13 +2,6 @@
     pageEncoding="EUC-KR"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<%-- <%@ page import="com.model2.mvc.service.domain.Product"%> --%>
-
-<%--
-	<%
-		Product product = (Product)request.getAttribute("product");
-	%>
---%>
 
 <html>
 <head>
@@ -20,7 +13,8 @@
 
 <body bgcolor="#ffffff" text="#000000">
 
-<form name="detailForm" method="post">
+<form name="detailForm" method="post" action=/product/getProduct>
+<input type="hidden" name="prodNo" value=${product.prodNo }>
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -51,7 +45,6 @@
 		<td class="ct_write01">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<%-- <td width="105"><%=product.getProdNo()%></td> --%>
 					<td width="105">${product.prodNo}</td> 
 				</tr>
 			</table>
@@ -122,6 +115,8 @@
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 	</tr>
+
+	
 </table>
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0"	style="margin-top: 10px;">
@@ -131,7 +126,6 @@
 
 		<table border="0" cellspacing="0" cellpadding="0">
 			<tr>
-				<%-- <%if(request.getParameter("menuCondition") == null){%> --%>
 				<c:if test="${param.comePath ne null || param.menu eq 'search'}">
 					<c:choose>
 						<c:when test="${param.comePath eq 'purchaser' && param.menu eq 'search' }">
@@ -139,31 +133,27 @@
 						<c:when test="${param.comePath eq 'saleList' && param.menu eq 'search' }">
 						</c:when>
 						<c:when test="${param.comePath eq null && param.menu eq 'search' }">
-							<td width="17" height="23">
-							<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
-							</td>
-							<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-							<a href="/purchase/addPurchase?prodNo=${product.prodNo }">구매</a>
-							</td>				
-							<td width="14" height="23">
-							<img src="/images/ct_btnbg03.gif" width="14" height="23">
-							</td>
+							<c:if test="${product.tranStatusCode > 0 ? false : true}">
+								<td width="17" height="23">
+								<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
+								</td>
+								<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
+								<a href="/purchase/addPurchase?prodNo=${product.prodNo }">구매</a>
+								</td>				
+								<td width="14" height="23">
+								<img src="/images/ct_btnbg03.gif" width="14" height="23">
+								</td>
+							</c:if>
 						</c:when>
 					</c:choose>
 				</c:if>
 					
-				<%-- <%} %>		 --%>
 				<td width="30"></td>
 		
 				<td width="17" height="23">
 					<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-					<%-- <%if(request.getParameter("menuCondition") == null){%>
-					<a href="javascript:history.go(-1)">이전</a>
-					<%}else{%>
-					<a href="/listProduct.do?menu=manage">확인</a>
-					<%}%> --%>
 					
 					<c:choose>
 						<c:when test="${param.comePath eq null || param.comePath eq 'purchaser'
@@ -186,6 +176,63 @@
 		</td>
 	</tr>
 </table>
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
+	
+	
+	<tr>
+		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
+	</tr>
+	<tr>
+		<td width="104" class="ct_write">
+			댓글목록 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
+		</td>
+	</tr>
+	<tr>
+		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
+	</tr>
+	<c:set var="i" value="0"/>
+	<c:forEach var="comments" items="${list}" >
+		<c:set var="i" value="${i+1}"/>
+		<tr>
+			<td width="104" class="ct_write">
+				${comments.userId} <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
+			</td>
+			<td bgcolor="D6D6D6" width="1"></td>
+			<td class="ct_write01">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td width="105">${comments.comments}</td> 
+					</tr>
+				</table>
+			</td>
+			<td width="100" class="ct_write">
+				${comments.regDate} <img src="/images/ct_icon_red.gif" width="3" height="3" align="right"/>
+			</td>
+			<td width="30">
+				<c:if test="${user.userId eq comments.userId || user.userId eq 'admin' }">
+				<a href="/product/commentDelete?productCommentNo=${comments.productCommentNo }&prodNo=${product.prodNo}&menu=search">댓글삭제</a>
+				</c:if>
+			</td>
+		</tr>
+		<tr>
+			<td height="1" colspan="3" bgcolor="D6D6D6"></td>
+		</tr>
+	</c:forEach>
+	
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
+<tr>
+	<td width="105">
+		<input type="text" name="userComment" width="100%">
+		<input type="submit" value="댓글등록">
+	</td>
+<tr>	
+</table>
+
 </form>
 
 </body>

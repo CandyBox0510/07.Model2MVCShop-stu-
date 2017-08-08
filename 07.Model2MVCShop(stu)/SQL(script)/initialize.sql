@@ -7,10 +7,12 @@ DROP TABLE wish;
 DROP SEQUENCE seq_product_prod_no;
 DROP SEQUENCE seq_transaction_tran_no;
 DROP SEQUENCE seq_wish_wish_no;
+DROP SEQUENCE seq_productcomment_productcomment_no
 
 CREATE SEQUENCE seq_product_prod_no		 	INCREMENT BY 1 START WITH 10000;
 CREATE SEQUENCE seq_transaction_tran_no	INCREMENT BY 1 START WITH 10000;
 CREATE SEQUENCE seq_wish_wish_no		 	INCREMENT BY 1 START WITH 10000;
+CREATE SEQUENCE seq_productcomment_comment_no		 	INCREMENT BY 1 START WITH 10000;
 
 
 CREATE TABLE users ( 
@@ -64,6 +66,13 @@ CREATE TABLE wish (
 	PRIMARY KEY(wish_no)
 );
 
+CREATE TABLE productcomment(
+	comment_no 			NUMBER NOT NULL,
+	user_id 			VARCHAR2(20) NOT NULL,
+	comments				VARCHAR2(150),
+	reg_date			DATE,
+	PRIMARY KEY(comment_no)
+);
 
 INSERT 
 INTO users ( user_id, user_name, password, role, ssn, cell_phone, addr, email, reg_date ) 

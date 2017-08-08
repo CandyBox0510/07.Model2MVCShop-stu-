@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.model2.mvc.common.Search;
+import com.model2.mvc.service.domain.Comment;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.product.ProductDao;
 import com.model2.mvc.service.product.ProductService;
@@ -24,6 +25,12 @@ public class ProductServiceImpl implements ProductService {
 	public ProductServiceImpl() {
 	
 	}
+	
+
+/*	public void setProductDao(ProductDao productDao) {
+		this.productDao = productDao;
+	}*/
+
 
 	@Override
 	public void addProduct(Product product) throws Exception {
@@ -68,8 +75,19 @@ public class ProductServiceImpl implements ProductService {
 		productDao.updateProductTranCode(map);
 	}
 	
-	public void setProductDao(ProductDao productDao) {
-		this.productDao = productDao;
+	@Override
+	public void addProductComment(Map<String,Object> map) throws Exception {
+		productDao.insertProductComment(map);
 	}
 
+	@Override
+	public List<Comment> getProductComment(String prodNo) throws Exception {
+		return productDao.getProductComment(prodNo);
+	}
+	
+	@Override
+	public void deleteProductComment(String commentNo) throws Exception{
+		productDao.deleteProductComment(commentNo);
+	}
+	
 }

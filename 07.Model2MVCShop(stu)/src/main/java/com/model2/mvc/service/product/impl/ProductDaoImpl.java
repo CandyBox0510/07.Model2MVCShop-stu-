@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.model2.mvc.common.Search;
+import com.model2.mvc.service.domain.Comment;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.product.ProductDao;
 
@@ -20,6 +21,10 @@ public class ProductDaoImpl implements ProductDao {
 	@Autowired
 	@Qualifier("sqlSessionTemplate")
 	private SqlSession sqlSession;
+	
+//	public void setSqlSession(SqlSession sqlSession) {
+//	this.sqlSession = sqlSession;
+//}
 
 	@Override
 	public Product findProduct(int prodNo) throws Exception {		
@@ -60,8 +65,18 @@ public class ProductDaoImpl implements ProductDao {
 		return sqlSession.selectOne("ProductMapper.getTotalCount",search);
 	}
 
-	public void setSqlSession(SqlSession sqlSession) {
-		this.sqlSession = sqlSession;
+	@Override
+	public void insertProductComment(Map<String,Object> map) throws Exception {
+		sqlSession.insert("ProductMapper.addProductComment",map);
 	}
 
+	@Override
+	public List<Comment> getProductComment(String prodNo) throws Exception {
+		return sqlSession.selectList("ProductMapper.getProductComment",prodNo);
+	}
+	
+	@Override
+	public void deleteProductComment(String commentNo) throws Exception{
+		sqlSession.delete("ProductMapper.deleteProductComment",commentNo);
+	}
 }

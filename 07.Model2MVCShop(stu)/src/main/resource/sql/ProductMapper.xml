@@ -17,6 +17,14 @@
 			<result property="regDate" column="reg_date" jdbcType="DATE"/>
 			<result property="tranStatusCode" column="tran_status_code" jdbcType="CHAR"/>
 	</resultMap>
+	
+	<resultMap id="commentSelectMap" type="com.model2.mvc.service.domain.Comment">
+			<result property="productCommentNo" column="comment_no" jdbcType="NUMERIC"/>
+			<result property="userId" column="user_id" jdbcType="VARCHAR"/>
+			<result property="comments" column="comments" jdbcType="VARCHAR"/>
+			<result property="regDate" column="reg_date" jdbcType="VARCHAR"/>
+			<result property="prodNo" column="prod_no" jdbcType="VARCHAR"/>
+	</resultMap>
   	
   	<insert id="addProduct" parameterType="product">
 		
@@ -29,6 +37,18 @@
 					 #{fileName,jdbcType=VARCHAR},sysdate)
 			
 	</insert>
+	
+	<insert id="addProductComment" parameterType="map">
+		
+		INSERT INTO productcomment(comment_no, user_id, comments, reg_date, prod_no)
+			   VALUES(seq_productcomment_comment_no.nextval,
+					 #{userId},
+					 #{comments:VARCHAR},
+					 (TO_CHAR(sysdate,'YYYY-MM-DD HH:MI:SS')),
+					 #{prodNo})
+			
+	</insert>
+	
  	<select id="getProduct" parameterType="_int" resultMap="productSelectMap">
 		
 		SELECT prod_no, prod_name, prod_detail, manufacture_day, price, image_file, reg_date, tran_status_code
@@ -74,6 +94,14 @@
 		DELETE
 		FROM product
 		WHERE prod_no=#{value}
+	</delete>
+
+
+
+	<delete id="deleteProductComment" parameterType="string">
+		DELETE
+		FROM productcomment
+		WHERE comment_No=#{value}
 	</delete>
 	
 
@@ -173,6 +201,13 @@
 				<if test="searchSortPrice == null">
 					ORDER BY prod_no
 				</if> ) countTable					
+	 </select>
+	 
+	 <select  id="getProductComment" resultMap="commentSelectMap">
+	 	SELECT comment_no, user_id, comments, reg_date
+	 	FROM productcomment
+	 	WHERE prod_no = ${value}
+	 	ORDER BY comment_no
 	 </select>
   	
 </mapper>
